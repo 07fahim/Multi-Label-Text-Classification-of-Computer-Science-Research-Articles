@@ -138,7 +138,7 @@ Converted SciBERT to ONNX for efficient inference with quantization.
 - **Cross-Platform** — Deploy on various frameworks and devices
 - **Production Ready** — Industry-standard format
 
-**Script:** `3_multilabel_classification_scibert_unweighted_onnx.ipynb`
+**Script:** ``
 
 ---
 
@@ -180,10 +180,9 @@ deployment/
 ├── app.py                    # Gradio application
 ├── requirements.txt          # Dependencies
 ├── README.md                 # Space documentation
-└── config.yaml              # Space configuration
 ```
 
-🔗 **Live Demo:** [https://huggingface.co/spaces/your-username/arxiv-classifier](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
+🔗 ****Try it here**:** 👉 [Live Demo](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
 
 ---
 
@@ -207,7 +206,7 @@ Start Command: gunicorn app:app
 
 5. Deploy with **Python 3** environment
 
-🔗 **Live App:** [https://arxiv-subject-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com)
+🔗 **Check it here** 👉 [Live App](https://multi-label-computer-science-article.onrender.com)
 
 ---
 
@@ -333,9 +332,6 @@ This project is licensed under the MIT License.
 
 
 
-This project is licensed under the MIT License.
 
----
 
-🌟 **If you like this project, give it a star on GitHub!**
 
