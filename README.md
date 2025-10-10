@@ -1,4 +1,4 @@
-# 🧠 arXiv Subject Classifier
+# Computer Science Research Articles Subject Classifier
 
 A **multi-label classification project** that predicts arXiv Computer Science subjects (e.g., _Machine Learning (cs.LG)_, _Artificial Intelligence (cs.AI)_) based on paper abstracts.
 
@@ -6,8 +6,8 @@ The pipeline includes:
 - Scraping **~30,000 papers (2023–2025)** using Selenium  
 - Training **SciBERT**, **DistilBERT**, and **DeBERTa-v3-small**
 - Selecting **SciBERT** for deployment due to superior performance
-- Converting the model to **ONNX**
-- Deploying a **Flask web app** on Render using the **Hugging Face Inference API**
+- Converting the model to **ONNX** for optimized inference
+- Deploying via **Flask on Render** and **Gradio on Hugging Face Spaces**
 
 ---
 
@@ -20,7 +20,7 @@ The pipeline includes:
 - [Model Performance](#model-performance)
 - [ONNX Conversion](#onnx-conversion)
 - [Flask Web App](#flask-web-app)
-- [Deployment on Render](#deployment-on-render)
+- [Deployment](#deployment)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Directory Structure](#directory-structure)
@@ -29,26 +29,18 @@ The pipeline includes:
 
 ---
 
-## 🚀 Project Overview
+## Project Overview
 
 This project classifies arXiv papers into multiple Computer Science subjects using their **abstracts**.
-
-### Workflow
-
-- **Branch: `main`**
-  - Data scraping, preprocessing, model training, and ONNX conversion  
-- **Branch: `flask`**
-  - Flask web app for inference using the Hugging Face API  
 
 ### Key Steps
 
 1. **Data Collection** — Scraped ~30,000 papers using Selenium  
-2. **Preprocessing** — Cleaned abstracts and subjects, filtered rare subjects (threshold = 0.01)  
+2. **Preprocessing** — Cleaned abstracts and subjects, filtered rare subjects  
 3. **Model Training** — Trained SciBERT, DistilBERT, DeBERTa-v3-small  
 4. **Model Selection** — Chose SciBERT for best performance  
-5. **ONNX Conversion** — Exported model for optimized inference  
-6. **Web App** — Flask app with subject prediction  
-7. **Deployment** — Hosted on Render
+5. **ONNX Conversion** — Exported model for optimized inference (reduced size from 421 MB to 110 MB)  
+6. **Deployment** — Hosted on Render and Hugging Face Spaces
 
 ---
 
@@ -56,35 +48,36 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
 
 | Branch | Description |
 |:--|:--|
-| **main** | Data scraping, preprocessing, model training, ONNX conversion |
+| **main** | Data scraping, preprocessing, model training, ONNX conversion and Deploying on Gradio on Hugging Face Spaces |
 | **flask** | Flask web app for inference using the Hugging Face API |
 
 ---
 
-## 📚 Dataset
+## Dataset
 
 - **Source:** [arXiv.org](https://arxiv.org)  
 - **Category:** Computer Science (cs)  
 - **Years:** 2023–2025 (~10,000 papers/year, total ~30,000)  
 
-**Fields:**  
-`title`, `abstract`, `subjects`, `url`, `authors`
+**Fields:** `title`, `abstract`, `subjects`, `url`, `authors`
 
 **Preprocessing:**
 - Removed LaTeX, URLs, punctuation; converted to lowercase  
 - Parsed subjects into full names (e.g., *Computation and Language (cs.CL)*)  
-- Filtered rare subjects (occurrence threshold = 0.01, ≈31 subjects)
+- Filtered rare subjects:
+  - **Initial subjects:** 141
+  - **Rare subjects removed:** 103
+  - **Final subjects:** 38 (threshold = 0.005)
+- Saved subject encodings to `subject_types_encoded.json`
 
-**Output:**  
-`arxiv_cs_papers_combined.csv` (~30,000 rows)
 
 **Scripts:**
-- `scraper.py` — Scrapes arXiv papers using Selenium  
-- `merge_data.py` — Merges yearly CSV files into one  
+- `src/scraper.py` — Scrapes arXiv papers using Selenium  
+- `src/merge_data.py` — Merges yearly CSV files into one  
 
 ---
 
-## 🧩 Model Training
+##  Model Training
 
 Trained three models using **FastAI** + **blurr**:
 
@@ -94,50 +87,62 @@ Trained three models using **FastAI** + **blurr**:
 | **DistilBERT** | ~66M | `distilbert-base-uncased` |
 | **DeBERTa-v3-small** | ~44M | `microsoft/deberta-v3-small` |
 
-### ⚙️ Training Details
+### Training Configuration
 
-- **Dataset:** `cs_2025_papers_10k.csv` (extended to ~30,000)
-- **Subjects threshold:** 0.01 (~31 subjects)
 - **Max length:** 512 tokens  
-- **Loss:** `BCEWithLogitsLossFlat` (unweighted)
+- **Loss:** `BCEWithLogitsLossFlat`
 - **Metrics:** Accuracy (thresh=0.2), F1 (micro/macro)
 - **Training Stages:**
   - **Stage 0:** Train classifier head (frozen) — 2 epochs  
   - **Stage 1:** Fine-tune entire model — 3–5 epochs  
 
-**Libraries:**  
-`fastai`, `blurr`, `transformers`, `onnxruntime`
-
 ---
 
 ## 📊 Model Performance
 
-| Model | Valid Loss | Accuracy (thresh=0.2) | F1 Score | Time/Epoch |
-|:--|:--:|:--:|:--:|:--:|
-| **SciBERT** | 0.0672 | 0.9743 | 0.5513 | ~4m 22s |
-| **DistilBERT** | 0.0761 | 0.9708 | 0.3881 | ~2m 23s |
-| **DeBERTa-v3-small** | 0.0764 | 0.9707 | 0.3867 | ~2m 23s |
+| Model | Parameters | Valid Loss | Accuracy | F1 Score (Micro) | Training Time/Epoch |
+|:--|:--:|:--:|:--:|:--:|:--:|
+| **SciBERT** ✅ | ~110M | **0.0672** | **0.9743** | **0.5513** | ~4m 22s |
+| **DistilBERT** | ~66M | 0.0761 | 0.9708 | 0.3881 | ~2m 23s |
+| **DeBERTa-v3-small** | ~44M | 0.0764 | 0.9707 | 0.3867 | ~2m 23s |
 
-✅ **Selected Model:** `SciBERT` — Highest accuracy and F1 score.
+### Why SciBERT?
 
----
+**SciBERT** was selected for deployment based on:
 
-## ⚡ ONNX Conversion
+1. **Domain-Specific Pretraining** — Trained on 1.14M scientific papers, providing better understanding of academic abstracts
+2. **Superior F1 Score** — 0.5513 vs 0.3881 (DistilBERT) and 0.3867 (DeBERTa), representing **42-43% improvement**
+3. **Lowest Validation Loss** — 0.0672 indicates better generalization
+4. **Specialized Vocabulary** — Scientific terms and notation for better technical concept representation
 
-Converted SciBERT (Stage 1) to ONNX for efficient inference.
-
-| Type | Path | Details |
-|:--|:--|:--|
-| **Normal ONNX** | `models/allenai_scibert_scivocab_uncased_arxiv-classifier.onnx` | FP32 |
-| **Quantized ONNX** | `models/allenai_scibert_scivocab_uncased_arxiv-classifier-quantized.onnx` | INT8 (QuantType.QUInt8) |
-
-Script: `3_multilabel_classification_scibert_unweighted_onnx.ipynb`
-
-Evaluated via accuracy, F1 (micro/macro), confusion matrix, and classification report.
+**Trade-off:** Longer training time (4m 22s vs ~2m 23s), justified by substantial performance gains for classifying 38 Computer Science subjects.
 
 ---
 
-## 🌍 Flask Web App
+##  ONNX Conversion
+
+Converted SciBERT to ONNX for efficient inference with quantization.
+
+### File Size Comparison
+
+| Format | Size | Reduction |
+|:--|:--:|:--:|
+| **PyTorch Model** | 421.3 MB | - |
+| **ONNX (FP32)** | 424.7 MB | - |
+| **ONNX Quantized (INT8)** | 110.3 MB | **74%** |
+
+### Benefits
+
+- **Faster Inference** — Optimized runtime performance
+- **Reduced Size** — INT8 quantization (424.7 MB → 110.3 MB)
+- **Cross-Platform** — Deploy on various frameworks and devices
+- **Production Ready** — Industry-standard format
+
+**Script:** `3_multilabel_classification_scibert_unweighted_onnx.ipynb`
+
+---
+
+## Flask Web App
 
 Flask app (in `flask` branch) allows users to input an **abstract** and receive **predicted subjects**.
 
@@ -156,34 +161,59 @@ flask/
     └── style.css
 ```
 
-**Dependencies:**  
-`Flask`, `requests`, `transformers`
+---
+
+## Deployment
+
+### Deployment on Hugging Face Spaces
+
+Deploy a Gradio interface on Hugging Face Spaces for interactive demos.
+
+**Steps:**
+
+1. Create a new Space on [Hugging Face Spaces](https://huggingface.co/spaces)
+2. Select **Gradio** as the SDK
+3. Use files from `deployment/` folder:
+
+```
+deployment/
+├── app.py                    # Gradio application
+├── requirements.txt          # Dependencies
+├── README.md                 # Space documentation
+└── config.yaml              # Space configuration
+```
+
+🔗 **Live Demo:** [https://huggingface.co/spaces/your-username/arxiv-classifier](https://huggingface.co/spaces/your-username/arxiv-classifier)
 
 ---
 
-## ☁️ Deployment on Render
+### Deployment on Render
 
-Steps:
+Deploy the Flask app on Render for production use.
+
+**Steps:**
 
 1. Push `flask` branch to GitHub  
 2. Connect to Render → New Web Service  
-3. Configure:
+3. Configure build and start commands:
 
 ```yaml
 Build Command: pip install -r requirements.txt
 Start Command: gunicorn app:app
 ```
 
-4. Environment:
-   - **Python 3**
-   - **HUGGINGFACE_API_TOKEN** (set as environment variable)
+4. Set environment variable:
+   - **HUGGINGFACE_API_TOKEN** (your Hugging Face API token)
 
-🔗 **Example URL:**  
-[https://arxiv-subject-classifier.onrender.com](https://arxiv-subject-classifier.onrender.com) *(replace with your actual deployment link)*
+5. Deploy with **Python 3** environment
+
+🔗 **Live App:** [https://arxiv-subject-classifier.onrender.com](https://arxiv-subject-classifier.onrender.com)
 
 ---
 
-## 🧱 Installation
+
+
+## Installation
 
 ### Prerequisites
 - Python ≥ 3.8  
@@ -198,27 +228,21 @@ Start Command: gunicorn app:app
 git clone https://github.com/your-username/arxiv-subject-classifier.git
 cd arxiv-subject-classifier
 
-# Switch branches
-git checkout main  # for training
-# or
-git checkout flask  # for web app
-
 # Install dependencies
 pip install -r requirements.txt
+
+# Set Hugging Face token
+export HUGGINGFACE_API_TOKEN='your-token'
 ```
 
 **requirements.txt**
-
 ```
 pandas
 selenium
 fastai==2.7.17
 torch
 transformers[sentencepiece]
-nbdev
-plum-dispatch
 evaluate
-seqeval
 onnxruntime
 onnx
 flask
@@ -226,23 +250,11 @@ requests
 gunicorn
 ```
 
-Set your Hugging Face token:
-
-```bash
-export HUGGINGFACE_API_TOKEN='your-huggingface-api-token'
-```
-
-or create `.env`:
-
-```ini
-HUGGINGFACE_API_TOKEN=your-huggingface-api-token
-```
-
 ---
 
 ## ▶️ Usage
 
-### Main Branch
+### Data Collection & Training (main branch)
 
 ```bash
 # Scrape arXiv data
@@ -250,21 +262,12 @@ python scraper.py
 
 # Merge yearly CSV files
 python merge_data.py
+
+# Train and export model
+jupyter notebook 
 ```
 
-Outputs combined data:
-
-```
-output/arxiv_cs_papers_combined.csv
-```
-
-Then train & export:
-
-```
-jupyter notebook 3_multilabel_classification_scibert_unweighted_onnx.ipynb
-```
-
-### Flask Branch
+### Flask App (flask branch)
 
 ```bash
 git checkout flask
@@ -273,43 +276,38 @@ python app.py
 
 Visit `http://localhost:5000` to test locally.
 
-Deploy by pushing to Render as described above.
-
----
-
-## 🤗 Hugging Face Model Hosting
-
-Push your trained SciBERT model to Hugging Face Hub:
-
-```python
-from transformers import AutoModelForSequenceClassification
-
-model = AutoModelForSequenceClassification.from_pretrained(
-    "path/to/models/allenai_scibert_scivocab_uncased_arxiv-classifier-stage-1"
-)
-model.push_to_hub("your-username/arxiv-scibert-classifier", use_auth_token="your-huggingface-api-token")
-```
-
 ---
 
 ## 🗂️ Directory Structure
 
 ```
-arxiv-subject-classifier/
+Multi-Label-Computer-Science-Article-Classifier/
 ├── main (branch)
-│   ├── output/
-│   ├── models/
-│   ├── scraper.py
-│   ├── merge_data.py
-│   ├── 3_multilabel_classification_scibert_unweighted_onnx.ipynb
-│   ├── subject_types_encoded.json
+│   ├── data/                     # Dataset files
+│   ├── deployment/               # Hugging Face Spaces deployment
+│   │   ├── app.py
+│   │   ├── requirements.txt
+│   │   ├── README.md
+│   │   
+│   ├── models/                   # Trained models
+│   │   
+│   │   
+│   ├── notebooks/                # Training notebooks
+│   │   
+│   ├── src/                      # Source code
+│   │   ├── scraper.py
+│   │   └── merge_data.py
+│   ├── README.md
 │   └── requirements.txt
-├── flask (branch)
-│   ├── templates/
-│   ├── static/
-│   ├── app.py
-│   └── requirements.txt
-└── README.md
+│
+└── flask (branch)
+    ├── static/                   # CSS and assets
+    ├── templates/                # HTML templates
+    │   └── index.html
+    ├── .gitignore
+    ├── app.py                    # Flask application
+    ├── README.md
+    └── requirements.txt
 ```
 
 ---
@@ -318,26 +316,24 @@ arxiv-subject-classifier/
 
 Contributions are welcome!
 
-1. Fork the repo
-2. Create a branch:
-   ```bash
-   git checkout -b feature-branch
-   ```
-3. Commit changes:
-   ```bash
-   git commit -m "Add new feature"
-   ```
-4. Push and create PR:
-   ```bash
-   git push origin feature-branch
-   ```
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-branch`
+3. Commit changes: `git commit -m "Add new feature"`
+4. Push and create PR: `git push origin feature-branch`
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.  
-See the LICENSE file for details.
+This project is licensed under the MIT License.
+
+---
+
+🌟 **If you like this project, give it a star on GitHub!**
+
+## 📄 License
+
+This project is licensed under the MIT License.
 
 ---
 
