@@ -1,0 +1,67 @@
+# --------------------------
+# Python cache / build files
+# --------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+.venv/
+venv/
+myenv/
+*.env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Logs & temp files
+*.log
+*.tmp
+*.out
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE configs
+.vscode/
+.idea/
+
+# --------------------------
+# Data & large artifacts
+# --------------------------
+data/
+datasets/
+*.csv
+*.tsv
+*.zip
+*.tar.gz
+
+# --------------------------
+# Hugging Face / ML model caches
+# --------------------------
+/huggingface/
+*.h5
+*.joblib
+*.ckpt
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# --------------------------
+# Kaggle / Colab
+# --------------------------
+/kaggle/working/
+/kaggle/temp/
+/content/*
+
+# --------------------------
+# Environment files
+# --------------------------
+requirements.txt.lock
+*.bak
+*.yml
+*.yaml

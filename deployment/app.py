@@ -26,19 +26,32 @@ def classify_subjects(abstract: str):
         max_length=512,
         return_tensors="np"
     )
+
     logits = inf_session.run([output_name], {input_name: inputs["input_ids"]})[0]
     logits = torch.FloatTensor(logits)
     probs = torch.sigmoid(logits)[0]
+
+    # Return dictionary of all subjects with probabilities
     return dict(zip(subjects, map(float, probs)))
 
 # Gradio Interface
-label = gr.Label(num_top_classes=10)
 iface = gr.Interface(
     fn=classify_subjects,
-    inputs=gr.Textbox(lines=5, placeholder="Enter research paper abstract here..."),
-    outputs=label,
-    title="Multi-Label Classification of Computer Science Research Articles",
-    description="Predict multiple subject categories from computer science research paper abstracts."
+    inputs=gr.Textbox(
+        lines=6,
+        placeholder="Enter research paper abstract here...",
+        label="Research Abstract"
+    ),
+    outputs=gr.Label(num_top_classes=5),
+    title="Computer Science Research Article Subject Classifier",
+    description=(
+        "This demo uses a SciBERT-based ONNX model to predict the top subject "
+        "categories from computer science research paper abstracts."
+    ),
+    theme="gradio/soft",
+    allow_flagging="never"
 )
 
-iface.launch()
+# Launch app
+iface.launch(inline=False)
+
