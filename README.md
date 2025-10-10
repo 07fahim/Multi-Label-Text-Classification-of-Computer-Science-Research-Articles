@@ -184,7 +184,7 @@ deployment/
 
 🔗 ****Try it here**:** 👉 [Live Demo](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
 
-<img src="deployment/assets/images/demo.png" width="900" height="450">
+<img src="assets/images/gradio_app.png" width="900" height="450">
 
 ---
 
@@ -210,8 +210,8 @@ Start Command: gunicorn app:app
 
 🔗 **Check it here** 👉 [Live App](https://multi-label-computer-science-article.onrender.com)
 
-<img src="docs/assets/images/demo1.png" width="900" height="450">
-<img src="docs/assets/images/demo2.png" width="900" height="450">
+<img src="assets/images/demo1.png" width="900" height="450">
+<img src="assets/images/demo2.png" width="900" height="450">
 
 ---
 
@@ -334,6 +334,7 @@ This project is licensed under the MIT License.
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
 
 
 
