@@ -61,6 +61,11 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
 
 **Fields:** `title`, `abstract`, `subjects`, `url`, `authors`
 
+**Scripts:**
+- `src/scraper.py` — Scrapes arXiv papers using Selenium  
+- `src/merge_data.py` — Merges yearly CSV files into one
+- 
+
 **Preprocessing:**
 - Removed LaTeX, URLs, punctuation; converted to lowercase  
 - Parsed subjects into full names (e.g., *Computation and Language (cs.CL)*)  
@@ -69,11 +74,6 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
   - **Rare subjects removed:** 103
   - **Final subjects:** 38 (threshold = 0.005)
 - Saved subject encodings to `subject_types_encoded.json`
-
-
-**Scripts:**
-- `src/scraper.py` — Scrapes arXiv papers using Selenium  
-- `src/merge_data.py` — Merges yearly CSV files into one  
 
 ---
 
@@ -184,7 +184,7 @@ deployment/
 
 🔗 ****Try it here**:** 👉 [Live Demo](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
 
-<img src="deployment/assets/images/demo.png" width="900" height="450">
+<img src="assets/images/gradio_app.png" width="900" height="450">
 
 ---
 
@@ -210,8 +210,8 @@ Start Command: gunicorn app:app
 
 🔗 **Check it here** 👉 [Live App](https://multi-label-computer-science-article.onrender.com)
 
-<img src="docs/assets/images/demo1.png" width="900" height="450">
-<img src="docs/assets/images/demo2.png" width="900" height="450">
+<img src="assets/images/demo1.png" width="900" height="450">
+<img src="assets/images/demo2.png" width="900" height="450">
 
 ---
 
@@ -220,8 +220,7 @@ Start Command: gunicorn app:app
 ## Installation
 
 ### Prerequisites
-- Python ≥ 3.8  
-- ChromeDriver (for Selenium)  
+- Python ≥ 3.8    
 - Git  
 - Hugging Face account
 
@@ -334,6 +333,9 @@ This project is licensed under the MIT License.
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
+
+
 
 
 
