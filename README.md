@@ -220,8 +220,7 @@ Start Command: gunicorn app:app
 ## Installation
 
 ### Prerequisites
-- Python ≥ 3.8  
-- ChromeDriver (for Selenium)  
+- Python ≥ 3.8    
 - Git  
 - Hugging Face account
 
@@ -334,6 +333,7 @@ This project is licensed under the MIT License.
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
 
 
 
