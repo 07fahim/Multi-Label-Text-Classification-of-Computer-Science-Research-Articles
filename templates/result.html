@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 Classification Result</h1>
+            <p>Top 5 predicted subjects</p>
+        </div>
+        <div class="content">
+            <div class="abstract"><strong>Input Abstract:</strong> {{ input_text }}</div>
+            <div class="tags">
+                {% for label in labels %}
+                    <span class="tag">{{ label }}</span>
+                {% endfor %}
+            </div>
+            <a href="/" class="back-btn">← Try Another</a>
+        </div>
+    </div>
+</body>
+</html>
