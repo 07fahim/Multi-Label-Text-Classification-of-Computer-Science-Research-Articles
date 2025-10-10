@@ -61,6 +61,11 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
 
 **Fields:** `title`, `abstract`, `subjects`, `url`, `authors`
 
+**Scripts:**
+- `src/scraper.py` — Scrapes arXiv papers using Selenium  
+- `src/merge_data.py` — Merges yearly CSV files into one
+- 
+
 **Preprocessing:**
 - Removed LaTeX, URLs, punctuation; converted to lowercase  
 - Parsed subjects into full names (e.g., *Computation and Language (cs.CL)*)  
@@ -69,11 +74,6 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
   - **Rare subjects removed:** 103
   - **Final subjects:** 38 (threshold = 0.005)
 - Saved subject encodings to `subject_types_encoded.json`
-
-
-**Scripts:**
-- `src/scraper.py` — Scrapes arXiv papers using Selenium  
-- `src/merge_data.py` — Merges yearly CSV files into one  
 
 ---
 
@@ -333,6 +333,7 @@ This project is licensed under the MIT License.
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
 
 
 
