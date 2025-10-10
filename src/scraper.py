@@ -9,23 +9,16 @@ import logging
 from pathlib import Path
 import random
 
-# -----------------------------
-# CONFIG
-# -----------------------------
+
 YEAR = 2025
-SHOW = 2000  # number of papers per page (valid values)
-MAX_PAPERS_PER_YEAR = 10000  # scrape max 10k papers
+SHOW = 2000  
+MAX_PAPERS_PER_YEAR = 10000  
 OUTPUT_DIR = Path("output")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-# -----------------------------
-# Logging
-# -----------------------------
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# -----------------------------
-# CREATE DRIVER
-# -----------------------------
 def create_driver():
     options = Options()
     options.add_argument('--headless=new')  # fully headless
@@ -35,9 +28,6 @@ def create_driver():
     wait = WebDriverWait(driver, 60)
     return driver, wait
 
-# -----------------------------
-# SCRAPE PAGE
-# -----------------------------
 def scrape_page(driver, wait, url):
     papers = []
     try:
@@ -82,9 +72,6 @@ def scrape_page(driver, wait, url):
         logging.error(f"Failed to scrape {url}: {e}")
         return []
 
-# -----------------------------
-# FETCH ABSTRACT
-# -----------------------------
 def fetch_abstract(driver, wait, paper):
     try:
         driver.get(paper['url'])
@@ -97,10 +84,8 @@ def fetch_abstract(driver, wait, paper):
         paper['abstract'] = ""
     return paper
 
-# -----------------------------
-# MAIN
-# -----------------------------
-driver, wait = create_driver()  # fully headless
+
+driver, wait = create_driver()  
 all_papers = []
 
 # Calculate how many pages are needed to reach 10k
@@ -109,15 +94,12 @@ logging.info(f"Scraping {pages_needed} pages (~{MAX_PAPERS_PER_YEAR} papers) for
 
 for page_num in range(pages_needed):
     skip = page_num * SHOW
-    # Correct URL format
     if page_num == 0:
         url = f"https://arxiv.org/list/cs/{YEAR}?show={SHOW}"
     else:
         url = f"https://arxiv.org/list/cs/{YEAR}?skip={skip}&show={SHOW}"
     page_papers = scrape_page(driver, wait, url)
     all_papers.extend(page_papers)
-
-# Limit to 10k papers just in case
 all_papers = all_papers[:MAX_PAPERS_PER_YEAR]
 logging.info(f"Total papers scraped: {len(all_papers)}")
 
