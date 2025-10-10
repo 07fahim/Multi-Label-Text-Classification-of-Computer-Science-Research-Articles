@@ -1,6 +1,6 @@
 # Computer Science Research Articles Subject Classifier
 
-A **multi-label classification project** that predicts arXiv Computer Science subjects (e.g., _Machine Learning (cs.LG)_, _Artificial Intelligence (cs.AI)_) based on paper abstracts.
+A **multi-label classification project** that predicts Computer Science subjects (e.g., _Machine Learning (cs.LG)_, _Artificial Intelligence (cs.AI)_) based on paper abstracts.
 
 The pipeline includes:
 - Scraping **~30,000 papers (2023–2025)** using Selenium  
@@ -11,7 +11,7 @@ The pipeline includes:
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Project Overview](#project-overview)
 - [Branches](#branches)
@@ -44,7 +44,7 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
 
 ---
 
-## 🌐 Branches
+## Branches
 
 | Branch | Description |
 |:--|:--|
@@ -98,7 +98,7 @@ Trained three models using **FastAI** + **blurr**:
 
 ---
 
-## 📊 Model Performance
+## Model Performance
 
 | Model | Parameters | Valid Loss | Accuracy | F1 Score (Micro) | Training Time/Epoch |
 |:--|:--:|:--:|:--:|:--:|:--:|
@@ -183,7 +183,7 @@ deployment/
 └── config.yaml              # Space configuration
 ```
 
-🔗 **Live Demo:** [https://huggingface.co/spaces/your-username/arxiv-classifier](https://huggingface.co/spaces/your-username/arxiv-classifier)
+🔗 **Live Demo:** [https://huggingface.co/spaces/your-username/arxiv-classifier](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
 
 ---
 
@@ -207,7 +207,7 @@ Start Command: gunicorn app:app
 
 5. Deploy with **Python 3** environment
 
-🔗 **Live App:** [https://arxiv-subject-classifier.onrender.com](https://arxiv-subject-classifier.onrender.com)
+🔗 **Live App:** [https://arxiv-subject-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com)
 
 ---
 
@@ -252,7 +252,7 @@ gunicorn
 
 ---
 
-## ▶️ Usage
+## Usage
 
 ### Data Collection & Training (main branch)
 
@@ -278,7 +278,7 @@ Visit `http://localhost:5000` to test locally.
 
 ---
 
-## 🗂️ Directory Structure
+## Directory Structure
 
 ```
 Multi-Label-Computer-Science-Article-Classifier/
@@ -312,7 +312,7 @@ Multi-Label-Computer-Science-Article-Classifier/
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!
 
@@ -331,10 +331,11 @@ This project is licensed under the MIT License.
 
 🌟 **If you like this project, give it a star on GitHub!**
 
-## 📄 License
+
 
 This project is licensed under the MIT License.
 
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
