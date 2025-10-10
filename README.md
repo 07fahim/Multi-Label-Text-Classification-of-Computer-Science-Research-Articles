@@ -1,4 +1,4 @@
-# Computer Science Research Articles Subject Classifier
+# Computer Science Research Article Subject Classifier
 
 A **multi-label classification project** that predicts Computer Science subjects (e.g., _Machine Learning (cs.LG)_, _Artificial Intelligence (cs.AI)_) based on paper abstracts.
 
@@ -334,6 +334,7 @@ This project is licensed under the MIT License.
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
 
 
 
