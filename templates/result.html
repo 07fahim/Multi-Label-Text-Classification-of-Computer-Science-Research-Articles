@@ -10,17 +10,46 @@
     <div class="container">
         <div class="header">
             <h1>🔬 Classification Result</h1>
-            <p>Top 5 predicted subjects</p>
+            <p>Top 5 predicted subjects with confidence scores</p>
         </div>
         <div class="content">
-            <div class="abstract"><strong>Input Abstract:</strong> {{ input_text }}</div>
-            <div class="tags">
-                {% for label in labels %}
-                    <span class="tag">{{ label }}</span>
-                {% endfor %}
+            <div class="abstract" id="abstractSection">
+                <strong>Input Abstract:</strong>
+                <div class="abstract-text">{{ input_text }}</div>
+                <button class="expand-btn" id="expandBtn">Read More ▼</button>
             </div>
-            <a href="/" class="back-btn">← Try Another</a>
+            
+            <div class="tags-section">
+                <h3>Predicted Subjects</h3>
+                <div class="tags">
+                    {% for item in labels %}
+                        <span class="tag">
+                            <span class="tag-label">{{ item.label }}</span>
+                            <span class="tag-confidence">{{ "%.1f"|format(item.confidence * 100) }}%</span>
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <a href="/" class="back-btn">
+                <span>←</span>
+                <span>Try Another</span>
+            </a>
         </div>
     </div>
+
+    <script>
+        const abstractSection = document.getElementById('abstractSection');
+        const expandBtn = document.getElementById('expandBtn');
+        
+        expandBtn.addEventListener('click', function() {
+            abstractSection.classList.toggle('expanded');
+            if (abstractSection.classList.contains('expanded')) {
+                expandBtn.textContent = 'Read Less ▲';
+            } else {
+                expandBtn.textContent = 'Read More ▼';
+            }
+        });
+    </script>
 </body>
 </html>

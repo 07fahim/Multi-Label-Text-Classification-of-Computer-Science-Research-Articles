@@ -13,14 +13,32 @@
             <p>Multi-label classification of Computer Science research articles using SciBERT</p>
         </div>
         <div class="content">
-            <form method="POST" action="/">
+            <form method="POST" action="/" id="classifyForm">
                 <div class="form-group">
                     <label for="abstract">Research Paper Abstract</label>
-                    <textarea id="abstract" name="abstract" placeholder="Enter your research paper abstract here..." required></textarea>
+                    <textarea 
+                        id="abstract" 
+                        name="abstract" 
+                        placeholder="Enter your research paper abstract here..." 
+                        required
+                    ></textarea>
                 </div>
-                <button type="submit" class="btn">Classify Subjects</button>
+                <button type="submit" class="btn" id="submitBtn">
+                    <span class="btn-text">Classify Subjects</span>
+                    <span class="spinner"></span>
+                </button>
             </form>
         </div>
     </div>
+
+    <script>
+        const form = document.getElementById('classifyForm');
+        const btn = document.getElementById('submitBtn');
+        
+        form.addEventListener('submit', function() {
+            btn.classList.add('loading');
+            btn.disabled = true;
+        });
+    </script>
 </body>
 </html>
