@@ -208,7 +208,7 @@ Start Command: gunicorn app:app
 
 5. Deploy with **Python 3** environment
 
-🔗 **Check it here** 👉 [Live App](https://multi-label-computer-science-article.onrender.com)
+🔗 **Check it here** 👉 [Live App](https://multi-label-computer-science-article.onrender.com/)
 
 <img src="assets/images/demo1.png" width="900" height="450">
 <img src="assets/images/demo2.png" width="900" height="450">
@@ -333,6 +333,7 @@ This project is licensed under the MIT License.
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
 
 
 
