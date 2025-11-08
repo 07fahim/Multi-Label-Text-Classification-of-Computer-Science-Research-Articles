@@ -208,15 +208,6 @@ Deploy the Flask app on Render using **Docker** with automated **GitHub Actions*
 The application is containerized using Docker for consistent deployment across environments.
 
 **Dockerfile:**
-```dockerfile
-FROM python:3.12-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-EXPOSE 10000
-CMD ["gunicorn", "-b", "0.0.0.0:10000", "--workers", "2", "--threads", "4", "--timeout", "120", "app:app"]
-```
 
 #### 🚀 CI/CD Pipeline
 
@@ -228,29 +219,6 @@ Automated deployment using **GitHub Actions** that triggers Render deployment vi
 - Render builds Docker image and deploys automatically
 
 **GitHub Actions Workflow** (`.github/workflows/deploy.yml`):
-
-```yaml
-name: Deploy to Render (flask branch)
-
-on:
-  push:
-    branches: [ flask ]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Trigger Render Deploy
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{"clearCache": true}' \
-            https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys
-```
 
 #### 📋 Setup Instructions
 
@@ -330,7 +298,7 @@ docker run -p 10000:10000 cs-classifier
 - Check service ID is correct
 - View workflow logs in GitHub Actions tab
 
-🔗 **Live App:** 👉 [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com/)
+🔗 **Live App:** 👉 [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com)
 
 <img src="assets/images/demo1.png" width="900" height="450">
 <img src="assets/images/demo2.png" width="900" height="450">
@@ -470,10 +438,11 @@ This project is licensed under the MIT License.
 
 ## 🔗 Links
 
-- **Live Flask App:** [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com/)
+- **Live Flask App:** [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com)
 - **Gradio Demo:** [HuggingFace Spaces](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
 - **GitHub Repository:** [Multi-Label-CS-Article-Classification](https://github.com/yeager07/Multi-Label-CS-Article-Classification)
 
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
