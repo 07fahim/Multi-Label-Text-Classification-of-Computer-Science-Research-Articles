@@ -207,74 +207,49 @@ Deploy the Flask app on Render using **Docker** with automated **GitHub Actions*
 
 The application is containerized using Docker for consistent deployment across environments.
 
-**Dockerfile Features:**
-- Python 3.12 slim base image
-- Optimized layer caching
-- Gunicorn WSGI server
-- Health checks
-- Non-root user for security
-
+**Dockerfile:**
 ```dockerfile
 FROM python:3.12-slim
-
 WORKDIR /app
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
 COPY . .
-
 EXPOSE 10000
-
 CMD ["gunicorn", "-b", "0.0.0.0:10000", "--workers", "2", "--threads", "4", "--timeout", "120", "app:app"]
 ```
 
 #### 🚀 CI/CD Pipeline
 
-Automated deployment using **GitHub Actions** that triggers on every push to `flask` branch.
+Automated deployment using **GitHub Actions** that triggers Render deployment via API.
 
-**Workflow Features:**
-- Automatic Docker image building
-- Push to Docker Hub registry
-- Trigger Render deployment via webhook
-- Build caching for faster deployments
+**How it works:**
+- Push to `flask` branch triggers GitHub Actions
+- Workflow calls Render API to deploy latest code
+- Render builds Docker image and deploys automatically
 
 **GitHub Actions Workflow** (`.github/workflows/deploy.yml`):
 
 ```yaml
-name: Deploy to Render
+name: Deploy to Render (flask branch)
 
 on:
   push:
-    branches:
-      - flask
-  workflow_dispatch:
+    branches: [ flask ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/cs-article-classifier:latest
-
-      - name: Trigger Render deployment
-        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      - name: Trigger Render Deploy
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache": true}' \
+            https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys
 ```
 
 #### 📋 Setup Instructions
@@ -283,43 +258,30 @@ jobs:
 
 Add these secrets to your GitHub repository (Settings → Secrets and variables → Actions):
 
-| Secret | Description |
-|--------|-------------|
-| `DOCKER_USERNAME` | Your Docker Hub username |
-| `DOCKER_PASSWORD` | Docker Hub access token |
-| `RENDER_DEPLOY_HOOK_URL` | Render deploy webhook URL |
+| Secret | Description | How to Get |
+|--------|-------------|------------|
+| `RENDER_API_KEY` | Your Render API key | Render Dashboard → Account Settings → API Keys |
+| `RENDER_SERVICE_ID` | Your service ID | Render service URL: `srv-xxxxx` |
 
 **2. Docker Hub Setup**
 
 1. Create account at [hub.docker.com](https://hub.docker.com)
 2. Create repository: `cs-article-classifier`
-3. Generate access token (Account Settings → Security → New Access Token)
 
 **3. Render Setup**
 
-**Option A: Using Blueprint (Recommended)**
 1. Go to [Render Dashboard](https://dashboard.render.com)
-2. New → Blueprint
-3. Connect GitHub repository
-4. Render auto-detects `render.yaml`
-5. Click "Apply"
-
-**Option B: Manual Setup**
-1. New → Web Service
-2. Connect GitHub repository
-3. Configure:
+2. New → Web Service
+3. Connect your GitHub repository
+4. Configure:
    - **Environment:** Docker
    - **Branch:** flask
    - **Dockerfile Path:** ./Dockerfile
    - **Instance Type:** Free
-4. Add environment variables:
+5. Add environment variables:
    - `PORT` = `10000`
    - `FLASK_ENV` = `production`
-
-**4. Get Deploy Hook**
-1. Service Settings → Deploy Hook
-2. Generate and copy URL
-3. Add to GitHub Secrets as `RENDER_DEPLOY_HOOK_URL`
+6. **Enable Auto-Deploy:** Settings → Auto-Deploy → Enable (Render will automatically pull and deploy new Docker images)
 
 #### 🔄 Deployment Process
 
@@ -331,9 +293,9 @@ git commit -m "Update application"
 git push origin flask
 
 # GitHub Actions automatically:
-# 1. Builds Docker image
-# 2. Pushes to Docker Hub
-# 3. Triggers Render deployment
+# 1. Triggers Render API
+# 2. Render builds Docker image from your repo
+# 3. Deploys the new version
 ```
 
 **Manual:**
@@ -351,16 +313,22 @@ git push origin flask
 
 **Build fails:**
 ```bash
-# Test locally
+# Test locally with Docker
 docker build -t cs-classifier .
 docker run -p 10000:10000 cs-classifier
+# Visit http://localhost:10000
 ```
 
 **Deployment issues:**
-- Check Render logs
-- Verify environment variables
-- Confirm port configuration (10000)
-- Check Docker Hub image exists
+- Check Render logs in dashboard
+- Verify GitHub secrets (`RENDER_API_KEY`, `RENDER_SERVICE_ID`)
+- Confirm Dockerfile exists in flask branch
+- Check port configuration (10000)
+
+**GitHub Actions fails:**
+- Verify Render API key is valid
+- Check service ID is correct
+- View workflow logs in GitHub Actions tab
 
 🔗 **Live App:** 👉 [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com/)
 
@@ -375,7 +343,6 @@ docker run -p 10000:10000 cs-classifier
 - Python ≥ 3.8    
 - Git  
 - Docker (for containerized deployment)
-- Hugging Face account
 
 ### Steps
 
@@ -399,13 +366,6 @@ gunicorn==20.1.0
 ---
 
 ## Usage
-
-### Data Collection & Training (main branch)
-
-```bash
-# Train and export model using Jupyter notebooks
-jupyter notebook
-```
 
 ### Flask App (flask branch)
 
@@ -437,9 +397,6 @@ Multi-Label-Computer-Science-Article-Classifier/
 │   │   └── README.md
 │   ├── models/                   # Trained models
 │   ├── notebooks/                # Training notebooks
-│   ├── src/                      # Source code
-│   │   ├── scraper.py
-│   │   └── merge_data.py
 │   ├── README.md
 │   └── requirements.txt
 │
