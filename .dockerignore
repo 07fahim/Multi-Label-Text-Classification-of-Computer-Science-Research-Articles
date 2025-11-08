@@ -29,8 +29,7 @@ instance/
 tests/
 notebooks/
 
-# Ignore images and other local assets if not needed
-assets/images/demo*.png
+
 
 # Ignore README screenshots and local docs
 README.md
