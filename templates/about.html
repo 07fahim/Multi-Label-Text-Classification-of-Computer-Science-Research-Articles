@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - CS Article Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="about-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">🔬</span>
+                <span>CS Article Classifier</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/classify" class="nav-link">Classifier</a>
+                <a href="/about" class="nav-link active">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Hero -->
+    <section class="about-hero">
+        <div class="section-container">
+            <h1 class="page-title">About the Project</h1>
+            <p class="page-subtitle">A comprehensive multi-label classification system for Computer Science research articles</p>
+        </div>
+    </section>
+
+    <!-- Project Overview -->
+    <section class="about-section">
+        <div class="section-container">
+            <div class="content-card">
+                <h2 class="content-title">Project Overview</h2>
+                <p>This project classifies arXiv papers into multiple Computer Science subjects using their abstracts. Built with state-of-the-art NLP techniques, it leverages SciBERT's domain-specific knowledge to achieve high accuracy in predicting research paper categories.</p>
+                
+                <div class="highlight-box">
+                    <h3>Key Achievements</h3>
+                    <ul class="achievement-list">
+                        <li>📊 Scraped and processed ~30,000 papers from arXiv (2023-2025)</li>
+                        <li>🧠 Trained and evaluated multiple transformer models</li>
+                        <li>🎯 Achieved 97.43% accuracy with SciBERT</li>
+                        <li>⚡ Optimized model size by 74% using ONNX quantization</li>
+                        <li>🚀 Deployed on multiple platforms for accessibility</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pipeline Section -->
+    <section class="about-section alt-bg">
+        <div class="section-container">
+            <h2 class="section-title">Development Pipeline</h2>
+            <div class="pipeline-steps">
+                <div class="pipeline-card">
+                    <div class="pipeline-icon">🔍</div>
+                    <h3>Data Collection</h3>
+                    <p><strong>Method:</strong> Selenium web scraping</p>
+                    <p><strong>Source:</strong> arXiv.org (Computer Science category)</p>
+                    <p><strong>Volume:</strong> ~30,000 papers (2023-2025)</p>
+                    <p><strong>Fields:</strong> Title, abstract, subjects, URL, authors</p>
+                </div>
+
+                <div class="pipeline-card">
+                    <div class="pipeline-icon">🧹</div>
+                    <h3>Preprocessing</h3>
+                    <p><strong>Cleaning:</strong> Removed LaTeX, URLs, punctuation</p>
+                    <p><strong>Normalization:</strong> Converted to lowercase</p>
+                    <p><strong>Subject Filtering:</strong> 141 → 38 subjects (threshold: 0.005)</p>
+                    <p><strong>Encoding:</strong> Saved to JSON for model use</p>
+                </div>
+
+                <div class="pipeline-card">
+                    <div class="pipeline-icon">🤖</div>
+                    <h3>Model Training</h3>
+                    <p><strong>Framework:</strong> FastAI + blurr</p>
+                    <p><strong>Models Tested:</strong> SciBERT, DistilBERT, DeBERTa-v3</p>
+                    <p><strong>Max Length:</strong> 512 tokens</p>
+                    <p><strong>Training:</strong> 2 epochs (frozen) + 3-5 epochs (fine-tune)</p>
+                </div>
+
+                <div class="pipeline-card">
+                    <div class="pipeline-icon">⚙️</div>
+                    <h3>Optimization</h3>
+                    <p><strong>Format:</strong> ONNX conversion</p>
+                    <p><strong>Quantization:</strong> FP32 → INT8</p>
+                    <p><strong>Size Reduction:</strong> 421MB → 110MB (74% smaller)</p>
+                    <p><strong>Benefit:</strong> Faster inference, lower memory</p>
+                </div>
+
+                <div class="pipeline-card">
+                    <div class="pipeline-icon">🚀</div>
+                    <h3>Deployment</h3>
+                    <p><strong>Flask App:</strong> Render hosting</p>
+                    <p><strong>Gradio Demo:</strong> Hugging Face Spaces</p>
+                    <p><strong>API:</strong> Hugging Face Inference API</p>
+                    <p><strong>Interface:</strong> User-friendly web application</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dataset Info -->
+    <section class="about-section">
+        <div class="section-container">
+            <h2 class="section-title">Dataset Information</h2>
+            <div class="dataset-info">
+                <div class="info-card">
+                    <h3>📚 Source</h3>
+                    <p><strong>Platform:</strong> arXiv.org</p>
+                    <p><strong>Category:</strong> Computer Science (cs)</p>
+                    <p><strong>Time Range:</strong> 2023-2025</p>
+                    <p><strong>Volume:</strong> ~30,000 papers (~10,000/year)</p>
+                </div>
+                <div class="info-card">
+                    <h3>🏷️ Subject Categories</h3>
+                    <p><strong>Initial:</strong> 141 subjects</p>
+                    <p><strong>Removed:</strong> 103 rare subjects</p>
+                    <p><strong>Final:</strong> 38 subjects</p>
+                    <p><strong>Threshold:</strong> 0.005 (minimum frequency)</p>
+                </div>
+                <div class="info-card">
+                    <h3>📝 Data Fields</h3>
+                    <p><strong>Title:</strong> Paper title</p>
+                    <p><strong>Abstract:</strong> Research summary</p>
+                    <p><strong>Subjects:</strong> CS categories</p>
+                    <p><strong>Metadata:</strong> URL, authors</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subjects List -->
+    <section class="about-section alt-bg">
+        <div class="section-container">
+            <h2 class="section-title">38 Classification Subjects</h2>
+            <p class="subjects-intro">The classifier can predict the following Computer Science and related subjects:</p>
+            <div class="subjects-grid">
+                <div class="subject-item">Artificial Intelligence (cs.AI)</div>
+                <div class="subject-item">Machine Learning (cs.LG)</div>
+                <div class="subject-item">Computer Vision and Pattern Recognition (cs.CV)</div>
+                <div class="subject-item">Computation and Language (cs.CL)</div>
+                <div class="subject-item">Robotics (cs.RO)</div>
+                <div class="subject-item">Cryptography and Security (cs.CR)</div>
+                <div class="subject-item">Systems and Control (eess.SY)</div>
+                <div class="subject-item">Human-Computer Interaction (cs.HC)</div>
+                <div class="subject-item">Numerical Analysis (math.NA)</div>
+                <div class="subject-item">Information Theory (cs.IT)</div>
+                <div class="subject-item">Computers and Society (cs.CY)</div>
+                <div class="subject-item">Software Engineering (cs.SE)</div>
+                <div class="subject-item">Machine Learning (stat.ML)</div>
+                <div class="subject-item">Information Retrieval (cs.IR)</div>
+                <div class="subject-item">Distributed, Parallel, and Cluster Computing (cs.DC)</div>
+                <div class="subject-item">Networking and Internet Architecture (cs.NI)</div>
+                <div class="subject-item">Signal Processing (eess.SP)</div>
+                <div class="subject-item">Social and Information Networks (cs.SI)</div>
+                <div class="subject-item">Audio and Speech Processing (eess.AS)</div>
+                <div class="subject-item">Sound (cs.SD)</div>
+                <div class="subject-item">Neural and Evolutionary Computing (cs.NE)</div>
+                <div class="subject-item">Data Structures and Algorithms (cs.DS)</div>
+                <div class="subject-item">Optimization and Control (math.OC)</div>
+                <div class="subject-item">Logic in Computer Science (cs.LO)</div>
+                <div class="subject-item">Multiagent Systems (cs.MA)</div>
+                <div class="subject-item">Computer Science and Game Theory (cs.GT)</div>
+                <div class="subject-item">Image and Video Processing (eess.IV)</div>
+                <div class="subject-item">Hardware Architecture (cs.AR)</div>
+                <div class="subject-item">Graphics (cs.GR)</div>
+                <div class="subject-item">Computational Engineering, Finance, and Science (cs.CE)</div>
+                <div class="subject-item">Databases (cs.DB)</div>
+                <div class="subject-item">Multimedia (cs.MM)</div>
+                <div class="subject-item">Programming Languages (cs.PL)</div>
+                <div class="subject-item">Computational Complexity (cs.CC)</div>
+                <div class="subject-item">Emerging Technologies (cs.ET)</div>
+                <div class="subject-item">Discrete Mathematics (cs.DM)</div>
+                <div class="subject-item">Digital Libraries (cs.DL)</div>
+                <div class="subject-item">Combinatorics (math.CO)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Comparison -->
+    <section class="about-section">
+        <div class="section-container">
+            <h2 class="section-title">Model Performance</h2>
+            <div class="table-container">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Parameters</th>
+                            <th>Valid Loss</th>
+                            <th>Accuracy</th>
+                            <th>F1 Score</th>
+                            <th>Time/Epoch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight-row">
+                            <td><strong>SciBERT ✅</strong></td>
+                            <td>~110M</td>
+                            <td>0.0672</td>
+                            <td>97.43%</td>
+                            <td>0.5513</td>
+                            <td>~4m 22s</td>
+                        </tr>
+                        <tr>
+                            <td>DistilBERT</td>
+                            <td>~66M</td>
+                            <td>0.0761</td>
+                            <td>97.08%</td>
+                            <td>0.3881</td>
+                            <td>~2m 23s</td>
+                        </tr>
+                        <tr>
+                            <td>DeBERTa-v3-small</td>
+                            <td>~44M</td>
+                            <td>0.0764</td>
+                            <td>97.07%</td>
+                            <td>0.3867</td>
+                            <td>~2m 23s</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Why SciBERT?</h3>
+                <div class="reason-grid">
+                    <div class="reason-item">
+                        <strong>🎓 Domain-Specific Training</strong>
+                        <p>Pre-trained on 1.14M scientific papers for better understanding of academic abstracts</p>
+                    </div>
+                    <div class="reason-item">
+                        <strong>📈 Superior Performance</strong>
+                        <p>42-43% F1 score improvement over alternatives (0.5513 vs ~0.38)</p>
+                    </div>
+                    <div class="reason-item">
+                        <strong>🎯 Best Generalization</strong>
+                        <p>Lowest validation loss (0.0672) indicates better performance on unseen data</p>
+                    </div>
+                    <div class="reason-item">
+                        <strong>📚 Scientific Vocabulary</strong>
+                        <p>Specialized tokenization for technical terms and scientific notation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="about-section alt-bg">
+        <div class="section-container">
+            <h2 class="section-title">Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h3>🤖 Machine Learning</h3>
+                    <ul>
+                        <li>SciBERT (allenai/scibert_scivocab_uncased)</li>
+                        <li>FastAI 2.7.17 + blurr</li>
+                        <li>PyTorch</li>
+                        <li>Transformers library</li>
+                    </ul>
+                </div>
+                <div class="tech-card">
+                    <h3>🌐 Web Framework</h3>
+                    <ul>
+                        <li>Flask (Backend API)</li>
+                        <li>Gradio (Interactive Demo)</li>
+                        <li>HTML/CSS (Frontend)</li>
+                        <li>Gunicorn (WSGI Server)</li>
+                    </ul>
+                </div>
+                <div class="tech-card">
+                    <h3>📊 Data Processing</h3>
+                    <ul>
+                        <li>Pandas (Data manipulation)</li>
+                        <li>Selenium (Web scraping)</li>
+                        <li>JSON (Data serialization)</li>
+                        <li>Regular Expressions (Cleaning)</li>
+                    </ul>
+                </div>
+                <div class="tech-card">
+                    <h3>🚀 Deployment</h3>
+                    <ul>
+                        <li>Render (Flask hosting)</li>
+                        <li>Hugging Face Spaces</li>
+                        <li>ONNX Runtime (Optimization)</li>
+                        <li>Git (Version control)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Repository Section -->
+    <section class="about-section">
+        <div class="section-container">
+            <h2 class="section-title">Project Repository</h2>
+            <div class="repo-info">
+                <div class="repo-card">
+                    <h3>📂 Branch Structure</h3>
+                    <div class="branch-list">
+                        <div class="branch-item">
+                            <strong>main</strong> — Data scraping, preprocessing, model training, ONNX conversion, Gradio deployment
+                        </div>
+                        <div class="branch-item">
+                            <strong>flask</strong> — Flask web application for inference using Hugging Face API
+                        </div>
+                    </div>
+                </div>
+                <div class="cta-box">
+                    <h3>Open Source</h3>
+                    <p>This project is open source and available under the MIT License. Contributions are welcome!</p>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <a href="https://github.com/07fahim Multi-Label-Text-Classification-of-Computer-Science-Research-Articles" target="_blank" class="btn-primary">
+                            <span>View on GitHub</span>
+                            <span>→</span>
+                        </a>
+                        <a href="https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification" target="_blank" class="btn-secondary">
+                            <span>Live Demo on HF Spaces</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <h4>Computer Science Article Classifier</h4>
+                <p class="footer-description">Multi-label classification for Computer Science research articles using SciBERT.</p>
+            </div>
+        </div>
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/fahim-faiyaz" target="_blank" class="social-link" aria-label="LinkedIn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+            </a>
+            <a href="https://github.com/07fahim" target="_blank" class="social-link" aria-label="GitHub">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            <a href="https://www.facebook.com/fahim.faiyaz.16" target="_blank" class="social-link" aria-label="Facebook">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                </svg>
+            </a>
+            <a href="https://your-portfolio.com" target="_blank" class="social-link" aria-label="Portfolio">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <rect width="24" height="24" rx="4" fill="currentColor" opacity="0.1"/>
+                    <text x="3" y="18" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="currentColor">Pf</text>
+                </svg>
+            </a>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Computer Science Article Classifier. Licensed under MIT License.</p>
+        </div>
+    </footer>
+</body>
+</html>

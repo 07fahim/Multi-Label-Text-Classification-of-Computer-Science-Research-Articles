@@ -3,31 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scientific Article Classifier</title>
+    <title>Classify Article - CS Article Classifier</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🔬 Computer Science Research Article Subject Classifier</h1>
-            <p>Multi-label classification of Computer Science research articles using SciBERT</p>
+<body class="classifier-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">🔬</span>
+                <span>CS Article Classifier</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/classify" class="nav-link active">Classifier</a>
+                <a href="/about" class="nav-link">About</a>
+            </div>
         </div>
-        <div class="content">
-            <form method="POST" action="/" id="classifyForm">
-                <div class="form-group">
-                    <label for="abstract">Research Paper Abstract</label>
-                    <textarea 
-                        id="abstract" 
-                        name="abstract" 
-                        placeholder="Enter your research paper abstract here..." 
-                        required
-                    ></textarea>
-                </div>
-                <button type="submit" class="btn" id="submitBtn">
-                    <span class="btn-text">Classify Subjects</span>
-                    <span class="spinner"></span>
-                </button>
-            </form>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>🔬 Computer Science Research Article Subject Classifier</h1>
+                <p>Multi-label classification of Computer Science research articles using SciBERT</p>
+            </div>
+            <div class="content">
+                <form method="POST" action="/classify" id="classifyForm">
+                    <div class="form-group">
+                        <label for="abstract">Research Paper Abstract</label>
+                        <textarea 
+                            id="abstract" 
+                            name="abstract" 
+                            placeholder="Enter your research paper abstract here..." 
+                            required
+                        ></textarea>
+                    </div>
+                    <button type="submit" class="btn" id="submitBtn">
+                        <span class="btn-text">Classify Subjects</span>
+                        <span class="spinner"></span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 

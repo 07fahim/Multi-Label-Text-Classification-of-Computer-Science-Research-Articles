@@ -1,0 +1,36 @@
+# Ignore Python cache and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+.venv/
+venv/
+env/
+
+# Ignore local build and config files
+*.log
+*.sqlite3
+instance/
+*.env
+.env
+.env.*
+*.DS_Store
+
+# Ignore Git and CI/CD related files
+.git/
+.gitignore
+.github/
+.idea/
+.vscode/
+
+# Ignore test data or notebooks
+*.ipynb
+tests/
+notebooks/
+
+# Ignore images and other local assets if not needed
+assets/images/demo*.png
+
+# Ignore README screenshots and local docs
+README.md
