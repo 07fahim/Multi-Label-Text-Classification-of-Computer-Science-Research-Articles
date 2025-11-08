@@ -28,25 +28,28 @@
                 <h1>🔬 Classification Result</h1>
                 <p>Top 5 predicted subjects with confidence scores</p>
             </div>
+
             <div class="content">
+                <!-- Abstract Section -->
                 <div class="abstract" id="abstractSection">
                     <strong>Input Abstract:</strong>
                     <div class="abstract-text">{{ input_text }}</div>
                     <button class="expand-btn" id="expandBtn">Read More ▼</button>
                 </div>
                 
+                <!-- Prediction Section -->
                 <div class="tags-section">
                     <h3>Predicted Subjects</h3>
                     <div class="tags">
                         {% for item in labels %}
                             <span class="tag">
                                 <span class="tag-label">{{ item.label }}</span>
-                                <span class="tag-confidence">{{ "%.1f"|format(item.confidence * 100) }}%</span>
+                                <span class="tag-confidence">{{ "%.2f"|format(item.confidence) }}%</span>
                             </span>
                         {% endfor %}
                     </div>
                 </div>
-                
+
                 <a href="/classify" class="back-btn">
                     <span>←</span>
                     <span>Try Another</span>
@@ -61,11 +64,9 @@
         
         expandBtn.addEventListener('click', function() {
             abstractSection.classList.toggle('expanded');
-            if (abstractSection.classList.contains('expanded')) {
-                expandBtn.textContent = 'Read Less ▲';
-            } else {
-                expandBtn.textContent = 'Read More ▼';
-            }
+            expandBtn.textContent = abstractSection.classList.contains('expanded')
+                ? 'Read Less ▲'
+                : 'Read More ▼';
         });
     </script>
 </body>
