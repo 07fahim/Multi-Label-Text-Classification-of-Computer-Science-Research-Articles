@@ -7,7 +7,9 @@ The pipeline includes:
 - Training **SciBERT**, **DistilBERT**, and **DeBERTa-v3-small**
 - Selecting **SciBERT** for deployment due to superior performance
 - Converting the model to **ONNX** for optimized inference
-- Deploying via **Flask on Render** and **Gradio on Hugging Face Spaces**
+- Deploying via **Flask on Render** with **Docker & GitHub Actions CI/CD** and **Gradio on Hugging Face Spaces**
+
+---
 
 ---
 
@@ -21,11 +23,17 @@ The pipeline includes:
 - [ONNX Conversion](#onnx-conversion)
 - [Flask Web App](#flask-web-app)
 - [Deployment](#deployment)
+  - [Hugging Face Spaces](#deployment-on-hugging-face-spaces)
+  - [Render with Docker & CI/CD](#deployment-on-render-with-docker--cicd)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Directory Structure](#directory-structure)
+- [Technologies Used](#technologies-used)
 - [Contributing](#contributing)
 - [License](#license)
+- [Links](#-links)
+
+---
 
 ---
 
@@ -40,7 +48,7 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
 3. **Model Training** — Trained SciBERT, DistilBERT, DeBERTa-v3-small  
 4. **Model Selection** — Chose SciBERT for best performance  
 5. **ONNX Conversion** — Exported model for optimized inference (reduced size from 421 MB to 110 MB)  
-6. **Deployment** — Hosted on Render and Hugging Face Spaces
+6. **Deployment** — Hosted on Render (with Docker & GitHub Actions) and Hugging Face Spaces
 
 ---
 
@@ -49,7 +57,7 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
 | Branch | Description |
 |:--|:--|
 | **main** | Data scraping, preprocessing, model training, ONNX conversion and Deploying on Gradio on Hugging Face Spaces |
-| **flask** | Flask web app for inference using the Hugging Face API |
+| **flask** | Flask web app with Docker containerization and CI/CD pipeline for Render deployment |
 
 ---
 
@@ -60,11 +68,6 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
 - **Years:** 2023–2025 (~10,000 papers/year, total ~30,000)  
 
 **Fields:** `title`, `abstract`, `subjects`, `url`, `authors`
-
-**Scripts:**
-- `src/scraper.py` — Scrapes arXiv papers using Selenium  
-- `src/merge_data.py` — Merges yearly CSV files into one
-- 
 
 **Preprocessing:**
 - Removed LaTeX, URLs, punctuation; converted to lowercase  
@@ -77,7 +80,7 @@ This project classifies arXiv papers into multiple Computer Science subjects usi
 
 ---
 
-##  Model Training
+## Model Training
 
 Trained three models using **FastAI** + **blurr**:
 
@@ -119,7 +122,7 @@ Trained three models using **FastAI** + **blurr**:
 
 ---
 
-##  ONNX Conversion
+## ONNX Conversion
 
 Converted SciBERT to ONNX for efficient inference with quantization.
 
@@ -138,8 +141,6 @@ Converted SciBERT to ONNX for efficient inference with quantization.
 - **Cross-Platform** — Deploy on various frameworks and devices
 - **Production Ready** — Industry-standard format
 
-**Script:** ``
-
 ---
 
 ## Flask Web App
@@ -148,17 +149,27 @@ Flask app (in `flask` branch) allows users to input an **abstract** and receive 
 
 ### Features
 - Input: Abstract via HTML form  
-- Output: Subjects with confidence scores  
-- API: Hugging Face Inference API  
+- Output: Top 5 subjects with confidence scores  
+- Caching: In-memory cache for repeated queries
+- API: Gradio Client API for inference
+- Concurrent processing with timeout handling
 
 **Files:**
 ```
 flask/
-├── app.py
+├── app.py                    # Flask application with caching
 ├── templates/
-│   └── index.html
-└── static/
-    └── style.css
+│   ├── home.html            # Landing page
+│   ├── index.html           # Classifier form
+│   ├── result.html          # Results display
+│   └── about.html           # Project information
+├── static/
+│   ├── style.css            # Cyberpunk theme styling
+│   └── bg-image.png         # Background image
+├── Dockerfile               # Docker containerization
+├── .dockerignore           # Docker ignore rules
+├── requirements.txt        # Python dependencies
+└── render.yaml            # Render deployment config
 ```
 
 ---
@@ -182,75 +193,207 @@ deployment/
 ├── README.md                 # Space documentation
 ```
 
-🔗 ****Try it here**:** 👉 [Live Demo](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
+🔗 **Try it here:** 👉 [Live Demo](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
 
 <img src="assets/images/gradio_app.png" width="900" height="450">
 
 ---
 
-### Deployment on Render
+### Deployment on Render with Docker & CI/CD
 
-Deploy the Flask app on Render for production use.
+Deploy the Flask app on Render using **Docker** with automated **GitHub Actions** CI/CD pipeline.
 
-**Steps:**
+#### 🐳 Docker Setup
 
-1. Push `flask` branch to GitHub  
-2. Connect to Render → New Web Service  
-3. Configure build and start commands:
+The application is containerized using Docker for consistent deployment across environments.
 
-```yaml
-Build Command: pip install -r requirements.txt
-Start Command: gunicorn app:app
+**Dockerfile Features:**
+- Python 3.12 slim base image
+- Optimized layer caching
+- Gunicorn WSGI server
+- Health checks
+- Non-root user for security
+
+```dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 10000
+
+CMD ["gunicorn", "-b", "0.0.0.0:10000", "--workers", "2", "--threads", "4", "--timeout", "120", "app:app"]
 ```
 
-4. Set environment variable:
-   - **HUGGINGFACE_API_TOKEN** (your Hugging Face API token)
+#### 🚀 CI/CD Pipeline
 
-5. Deploy with **Python 3** environment
+Automated deployment using **GitHub Actions** that triggers on every push to `flask` branch.
 
-🔗 **Check it here** 👉 [Live App](https://multi-label-computer-science-article.onrender.com/)
+**Workflow Features:**
+- Automatic Docker image building
+- Push to Docker Hub registry
+- Trigger Render deployment via webhook
+- Build caching for faster deployments
+
+**GitHub Actions Workflow** (`.github/workflows/deploy.yml`):
+
+```yaml
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - flask
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/cs-article-classifier:latest
+
+      - name: Trigger Render deployment
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+```
+
+#### 📋 Setup Instructions
+
+**1. GitHub Secrets Configuration**
+
+Add these secrets to your GitHub repository (Settings → Secrets and variables → Actions):
+
+| Secret | Description |
+|--------|-------------|
+| `DOCKER_USERNAME` | Your Docker Hub username |
+| `DOCKER_PASSWORD` | Docker Hub access token |
+| `RENDER_DEPLOY_HOOK_URL` | Render deploy webhook URL |
+
+**2. Docker Hub Setup**
+
+1. Create account at [hub.docker.com](https://hub.docker.com)
+2. Create repository: `cs-article-classifier`
+3. Generate access token (Account Settings → Security → New Access Token)
+
+**3. Render Setup**
+
+**Option A: Using Blueprint (Recommended)**
+1. Go to [Render Dashboard](https://dashboard.render.com)
+2. New → Blueprint
+3. Connect GitHub repository
+4. Render auto-detects `render.yaml`
+5. Click "Apply"
+
+**Option B: Manual Setup**
+1. New → Web Service
+2. Connect GitHub repository
+3. Configure:
+   - **Environment:** Docker
+   - **Branch:** flask
+   - **Dockerfile Path:** ./Dockerfile
+   - **Instance Type:** Free
+4. Add environment variables:
+   - `PORT` = `10000`
+   - `FLASK_ENV` = `production`
+
+**4. Get Deploy Hook**
+1. Service Settings → Deploy Hook
+2. Generate and copy URL
+3. Add to GitHub Secrets as `RENDER_DEPLOY_HOOK_URL`
+
+#### 🔄 Deployment Process
+
+**Automatic:**
+```bash
+# Make changes and push
+git add .
+git commit -m "Update application"
+git push origin flask
+
+# GitHub Actions automatically:
+# 1. Builds Docker image
+# 2. Pushes to Docker Hub
+# 3. Triggers Render deployment
+```
+
+**Manual:**
+1. Go to GitHub Actions tab
+2. Select "Deploy to Render" workflow
+3. Click "Run workflow"
+
+#### 📊 Monitoring
+
+- **GitHub Actions:** View build logs in Actions tab
+- **Render Dashboard:** Monitor deployment status and logs
+- **Health Check:** `https://your-app.onrender.com/`
+
+#### 🐛 Troubleshooting
+
+**Build fails:**
+```bash
+# Test locally
+docker build -t cs-classifier .
+docker run -p 10000:10000 cs-classifier
+```
+
+**Deployment issues:**
+- Check Render logs
+- Verify environment variables
+- Confirm port configuration (10000)
+- Check Docker Hub image exists
+
+🔗 **Live App:** 👉 [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com/)
 
 <img src="assets/images/demo1.png" width="900" height="450">
 <img src="assets/images/demo2.png" width="900" height="450">
 
 ---
 
-
-
 ## Installation
 
 ### Prerequisites
 - Python ≥ 3.8    
 - Git  
+- Docker (for containerized deployment)
 - Hugging Face account
 
 ### Steps
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/arxiv-subject-classifier.git
-cd arxiv-subject-classifier
+git clone https://github.com/yeager07/Multi-Label-CS-Article-Classification.git
+cd Multi-Label-CS-Article-Classification
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Set Hugging Face token
-export HUGGINGFACE_API_TOKEN='your-token'
 ```
 
 **requirements.txt**
 ```
-pandas
-selenium
-fastai==2.7.17
-torch
-transformers[sentencepiece]
-evaluate
-onnxruntime
-onnx
 flask
-requests
-gunicorn
+werkzeug==2.3.0
+gradio_client
+gunicorn==20.1.0
 ```
 
 ---
@@ -260,24 +403,25 @@ gunicorn
 ### Data Collection & Training (main branch)
 
 ```bash
-# Scrape arXiv data
-python scraper.py
-
-# Merge yearly CSV files
-python merge_data.py
-
-# Train and export model
-jupyter notebook 
+# Train and export model using Jupyter notebooks
+jupyter notebook
 ```
 
 ### Flask App (flask branch)
 
+**Local Development:**
 ```bash
 git checkout flask
 python app.py
+# Visit http://localhost:5000
 ```
 
-Visit `http://localhost:5000` to test locally.
+**Docker:**
+```bash
+docker build -t cs-classifier .
+docker run -p 10000:10000 cs-classifier
+# Visit http://localhost:10000
+```
 
 ---
 
@@ -290,13 +434,9 @@ Multi-Label-Computer-Science-Article-Classifier/
 │   ├── deployment/               # Hugging Face Spaces deployment
 │   │   ├── app.py
 │   │   ├── requirements.txt
-│   │   ├── README.md
-│   │   
+│   │   └── README.md
 │   ├── models/                   # Trained models
-│   │   
-│   │   
 │   ├── notebooks/                # Training notebooks
-│   │   
 │   ├── src/                      # Source code
 │   │   ├── scraper.py
 │   │   └── merge_data.py
@@ -304,14 +444,53 @@ Multi-Label-Computer-Science-Article-Classifier/
 │   └── requirements.txt
 │
 └── flask (branch)
+    ├── .github/
+    │   └── workflows/
+    │       └── deploy.yml        # GitHub Actions CI/CD
     ├── static/                   # CSS and assets
+    │   ├── style.css
+    │   └── bg-image.png
     ├── templates/                # HTML templates
-    │   └── index.html
+    │   ├── home.html
+    │   ├── index.html
+    │   ├── result.html
+    │   └── about.html
+    ├── .dockerignore            # Docker ignore rules
     ├── .gitignore
-    ├── app.py                    # Flask application
+    ├── Dockerfile               # Docker configuration
+    ├── app.py                   # Flask application
+    ├── render.yaml              # Render blueprint
     ├── README.md
     └── requirements.txt
 ```
+
+---
+
+## Technologies Used
+
+### Machine Learning
+- **SciBERT** (allenai/scibert_scivocab_uncased)
+- **FastAI** 2.7.17 + blurr
+- **PyTorch**
+- **Transformers** library
+- **ONNX Runtime** (optimization)
+
+### Web Framework
+- **Flask** (Backend API)
+- **Gradio** (Interactive demo)
+- **HTML/CSS** (Frontend)
+- **Gunicorn** (WSGI server)
+
+### DevOps & Deployment
+- **Docker** (Containerization)
+- **GitHub Actions** (CI/CD pipeline)
+- **Render** (Flask hosting)
+- **Hugging Face Spaces** (Gradio hosting)
+
+### Data Processing
+- **Pandas** (Data manipulation)
+- **Selenium** (Web scraping)
+- **JSON** (Data serialization)
 
 ---
 
@@ -332,17 +511,12 @@ This project is licensed under the MIT License.
 
 ---
 
+## 🔗 Links
+
+- **Live Flask App:** [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com/)
+- **Gradio Demo:** [HuggingFace Spaces](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
+- **GitHub Repository:** [Multi-Label-CS-Article-Classification](https://github.com/yeager07/Multi-Label-CS-Article-Classification)
+
+---
+
 🌟 **If you like this project, give it a star on GitHub!**
-
-
-
-
-
-
-
-
-
-
-
-
-
