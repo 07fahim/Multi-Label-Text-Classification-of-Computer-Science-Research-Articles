@@ -298,7 +298,7 @@ docker run -p 10000:10000 cs-classifier
 - Check service ID is correct
 - View workflow logs in GitHub Actions tab
 
-🔗 **Live App:** 👉 [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com)
+🔗 **Live App:** 👉 [multi-label-cs-article-classifier.onrender.com](https://multi-label-text-classification-of.onrender.com)
 
 <img src="assets/images/demo1.png" width="900" height="450">
 <img src="assets/images/demo2.png" width="900" height="450">
@@ -438,11 +438,12 @@ This project is licensed under the MIT License.
 
 ## 🔗 Links
 
-- **Live Flask App:** [multi-label-cs-article-classifier.onrender.com](https://multi-label-computer-science-article.onrender.com)
+- **Live Flask App:** [multi-label-cs-article-classifier.onrender.com](https://multi-label-text-classification-of.onrender.com)
 - **Gradio Demo:** [HuggingFace Spaces](https://huggingface.co/spaces/yeager07/multi-label-cs-article-classification)
 - **GitHub Repository:** [Multi-Label-CS-Article-Classification](https://github.com/yeager07/Multi-Label-CS-Article-Classification)
 
 ---
 
 🌟 **If you like this project, give it a star on GitHub!**
+
 
